@@ -1,10 +1,9 @@
-package ir.sudoit.ulid.hibernate;
+package ir.sudoit.ulid;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 
 public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
@@ -141,18 +140,12 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
         return new ULID(msb & TIMESTAMP_MSB_MASK, 0);
     }
 
-    public void appendULID(StringBuilder stringBuilder) {
-        Objects.requireNonNull(stringBuilder, "stringBuilder must not be null!");
-        internalAppendULID(stringBuilder, System.currentTimeMillis(), Holder.numberGenerator);
-    }
-
 
     /**
      * Returns the next monotonic value. If an overflow happened while incrementing the random part of the given
      * previous ULID value then the returned value will have a zero random part.
      *
      * @param previousUlid the previous ULID value.
-     *
      * @return the next monotonic value.
      */
     public ULID nextMonotonicValue(ULID previousUlid) {
@@ -165,7 +158,6 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
      *
      * @param previousUlid the previous ULID value.
      * @param timestamp    the timestamp of the next ULID value.
-     *
      * @return the next monotonic value.
      */
     public static ULID nextMonotonicValue(ULID previousUlid, long timestamp) {
@@ -176,34 +168,6 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
         return randomULID(timestamp);
     }
 
-    /**
-     * Returns the next monotonic value or empty if an overflow happened while incrementing the random part of the given
-     * previous ULID.
-     *
-     * @param previousUlid the previous ULID value.
-     *
-     * @return the next monotonic value or empty if an overflow happened.
-     */
-    public static Optional<ULID> nextStrictlyMonotonicValue(ULID previousUlid) {
-        return nextStrictlyMonotonicValue(previousUlid, System.currentTimeMillis());
-    }
-
-    /**
-     * Returns the next monotonic value or empty if an overflow happened while incrementing the random part of the given
-     * previous ULID.
-     *
-     * @param previousUlid the previous ULID value.
-     * @param timestamp    the timestamp of the next ULID value.
-     *
-     * @return the next monotonic value or empty if an overflow happened.
-     */
-    public static Optional<ULID> nextStrictlyMonotonicValue(ULID previousUlid, long timestamp) {
-        ULID result = nextMonotonicValue(previousUlid, timestamp);
-        if (result.compareTo(previousUlid) < 1) {
-            return Optional.empty();
-        }
-        return Optional.of(result);
-    }
 
     public static ULID parseULID(String ulidString) {
         Objects.requireNonNull(ulidString, "ulidString must not be null!");
