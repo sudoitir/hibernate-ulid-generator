@@ -26,6 +26,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <hibernate.version>6.5.2.Final</hibernate.version>
+        <sonar.organization>sudoitir</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
