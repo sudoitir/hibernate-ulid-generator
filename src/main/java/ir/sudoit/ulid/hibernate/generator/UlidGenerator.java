@@ -62,10 +62,7 @@ public class UlidGenerator implements IdentifierGenerator {
         return null;
     }
 
-    public Object generateValue(Class<?> type) {
-        if (type == null) {
-            return null;
-        }
+    Object generateValue(Class<?> type) {
         if (ULID.class.isAssignableFrom(type)) {
             return ULID.randomULID();
         }

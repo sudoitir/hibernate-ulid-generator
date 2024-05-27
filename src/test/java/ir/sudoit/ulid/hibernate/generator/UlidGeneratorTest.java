@@ -11,30 +11,30 @@ import static org.mockito.Mockito.mock;
 
 class UlidGeneratorTest {
 
-    public static class MockEntity {
-        @Id
-        private ULID id;
-    }
-
-    public static class MockEntityStringId {
-        @Id
-        private String id;
-    }
-
-    public static class MockEntityByteId {
-        @Id
-        private byte[] id;
-    }
-
-    public static class MockEntityNoId {
-        private String someField;
-    }
 
     @Test
     void testGenerateWithIdField() {
         UlidGenerator generator = new UlidGenerator();
         SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
         Object generatedValue = generator.generate(session, new MockEntity());
+        assertNotNull(generatedValue, "Generated value should not be null");
+        assertInstanceOf(ULID.class, generatedValue, "Generated value should be an instance of ULID");
+    }
+
+    @Test
+    void testGenerateWithIdFieldInParentClass() {
+        UlidGenerator generator = new UlidGenerator();
+        SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
+        Object generatedValue = generator.generate(session, new MockEntityChild());
+        assertNotNull(generatedValue, "Generated value should not be null");
+        assertInstanceOf(ULID.class, generatedValue, "Generated value should be an instance of ULID");
+    }
+
+    @Test
+    void testGenerateWithIdFieldInParentClassHierarchy() {
+        UlidGenerator generator = new UlidGenerator();
+        SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
+        Object generatedValue = generator.generate(session, new MockEntityChild());
         assertNotNull(generatedValue, "Generated value should not be null");
         assertInstanceOf(ULID.class, generatedValue, "Generated value should be an instance of ULID");
     }
@@ -65,6 +65,13 @@ class UlidGeneratorTest {
     }
 
     @Test
+    void testGenerateWithUnsupportedIdField() {
+        UlidGenerator generator = new UlidGenerator();
+        SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
+        assertThrows(IllegalArgumentException.class, () -> generator.generate(session, new MockEntityUnsupportedTypeIdField()));
+    }
+
+    @Test
     void testGenerateValue() {
         UlidGenerator generator = new UlidGenerator();
 
@@ -81,5 +88,38 @@ class UlidGeneratorTest {
         assertInstanceOf(byte[].class, bytesValue, "Generated value should be an instance of byte[]");
 
         assertThrows(IllegalArgumentException.class, () -> generator.generateValue(Integer.class));
+    }
+
+    public static class MockEntity {
+        @Id
+        private ULID id;
+    }
+
+
+    public static class MockEntityStringId {
+        @Id
+        private String id;
+    }
+
+    public static class MockEntityByteId {
+        @Id
+        private byte[] id;
+    }
+
+    public static class MockEntityNoId {
+        private String someField;
+    }
+
+    public static class MockEntityChild extends MockEntity {
+        private String someField;
+    }
+
+    public static class MockEntityChild2 extends MockEntityChild {
+        private String someField2;
+    }
+
+    public static class MockEntityUnsupportedTypeIdField {
+        @Id
+        private Long id;
     }
 }
