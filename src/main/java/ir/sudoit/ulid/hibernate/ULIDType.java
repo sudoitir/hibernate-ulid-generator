@@ -93,7 +93,6 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class PassThroughTransformer implements ULIDType.ValueTransformer {
-        private final static ULIDType.PassThroughTransformer INSTANCE = new PassThroughTransformer();
 
         public ULID transform(ULID ulid) {
             return ulid;
@@ -103,8 +102,12 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return (ULID) value;
         }
 
-        public static synchronized PassThroughTransformer getInstance() {
-            return INSTANCE;
+        private static class SingletonHelper {
+            private static final PassThroughTransformer INSTANCE = new PassThroughTransformer();
+        }
+
+        public static PassThroughTransformer getInstance() {
+            return PassThroughTransformer.SingletonHelper.INSTANCE;
         }
 
         private PassThroughTransformer() {
@@ -112,7 +115,6 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToStringTransformer implements ULIDType.ValueTransformer {
-        private final static ULIDType.ToStringTransformer INSTANCE = new ToStringTransformer();
 
         public String transform(ULID ulid) {
             return ulid.toString();
@@ -122,8 +124,12 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return ULID.parseULID((String) value);
         }
 
-        public static synchronized ToStringTransformer getInstance() {
-            return INSTANCE;
+        private static class SingletonHelper {
+            private static final ToStringTransformer INSTANCE = new ToStringTransformer();
+        }
+
+        public static ToStringTransformer getInstance() {
+            return ToStringTransformer.SingletonHelper.INSTANCE;
         }
 
         private ToStringTransformer() {
@@ -131,7 +137,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        private final static ULIDType.ToBytesTransformer INSTANCE = new ToBytesTransformer();
+        private static final ULIDType.ToBytesTransformer INSTANCE = new ToBytesTransformer();
 
         public byte[] transform(ULID ulid) {
             byte[] bytes = new byte[16];
@@ -145,8 +151,12 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return new ULID(BytesHelper.asLong(bytea, 0), BytesHelper.asLong(bytea, 8));
         }
 
+        private static class SingletonHelper {
+            private static final ToBytesTransformer INSTANCE = new ToBytesTransformer();
+        }
+
         public static ToBytesTransformer getInstance() {
-            return INSTANCE;
+            return ToBytesTransformer.SingletonHelper.INSTANCE;
         }
 
         private ToBytesTransformer() {
