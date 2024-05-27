@@ -213,15 +213,6 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
         return mostSignificantBits >>> 16;
     }
 
-    /*
-     * http://crockford.com/wrmg/base32.html
-     */
-    private static void internalAppendCrockford(StringBuilder builder, long value, int count) {
-        for (int i = count - 1; i >= 0; i--) {
-            int index = (int) ((value >>> (i * MASK_BITS)) & MASK);
-            builder.append(ENCODING_CHARS[index]);
-        }
-    }
 
     private static long internalParseCrockford(String input) {
         Objects.requireNonNull(input, "input must not be null!");
@@ -253,16 +244,6 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
             int index = (int) ((value >>> ((count - i - 1) * MASK_BITS)) & MASK);
             buffer[offset + i] = ENCODING_CHARS[index];
         }
-    }
-
-
-    private static void internalAppendULID(StringBuilder builder, long timestamp, Random random) {
-        checkTimestamp(timestamp);
-
-        internalAppendCrockford(builder, timestamp, 10);
-        // could use nextBytes(byte[] bytes) instead
-        internalAppendCrockford(builder, random.nextLong(), 8);
-        internalAppendCrockford(builder, random.nextLong(), 8);
     }
 
     private static void checkTimestamp(long timestamp) {

@@ -3,6 +3,8 @@ package ir.sudoit.ulid;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Set;
@@ -142,11 +144,90 @@ class ULIDTest {
     void testParseULIDInvalidStringLength() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> ULID.parseULID("0000000000000000000000000"), // One char short
+                () -> ULID.parseULID("0000000000000000000000000"),
                 "Expected parseULID to throw, but it didn't"
         );
         assertTrue(exception.getMessage().contains("ulidString must be exactly 26 chars long"));
     }
+
+    // Test toString method
+    @Test
+    void testToString() {
+        ULID ulid = new ULID(0L, 0L);
+        String ulidString = ulid.toString();
+        assertNotNull(ulidString, "ULID string should not be null");
+        assertEquals(26, ulidString.length(), "ULID string should be 26 characters long");
+    }
+
+    // Test toBytes method
+    @Test
+    void testToBytes() {
+        ULID ulid = new ULID(0L, 0L);
+        byte[] bytes = ulid.toBytes();
+        assertNotNull(bytes, "ULID bytes should not be null");
+        assertEquals(16, bytes.length, "ULID bytes should be 16 bytes long");
+    }
+
+    // Test equals method
+    @Test
+    void testEquals() {
+        ULID ulid1 = new ULID(0L, 0L);
+        ULID ulid2 = new ULID(0L, 0L);
+        ULID ulid3 = new ULID(1L, 0L);
+        assertEquals(ulid1, ulid2, "ULIDs with same values should be equal");
+        assertNotEquals(ulid1, ulid3, "ULIDs with different values should not be equal");
+    }
+
+    // Test hashCode method
+    @Test
+    void testHashCode() {
+        ULID ulid = new ULID(0L, 0L);
+        int hashCode = ulid.hashCode();
+        assertEquals(hashCode, ulid.hashCode(), "Hash code should be consistent");
+    }
+
+    // Test compareTo method
+    @Test
+    void testCompareTo() {
+        ULID ulid1 = new ULID(0L, 0L);
+        ULID ulid2 = new ULID(0L, 0L);
+        ULID ulid3 = new ULID(1L, 0L);
+        assertEquals(0, ulid1.compareTo(ulid2), "ULIDs with same values should be equal");
+        assertTrue(ulid1.compareTo(ulid3) < 0, "ULID1 should be less than ULID3");
+    }
+
+    // Test clone method
+    @Test
+    void testClone() {
+        ULID ulid = new ULID(0L, 0L);
+        ULID clonedUlid = (ULID) ulid.clone();
+        assertEquals(ulid, clonedUlid, "Cloned ULID should be equal to the original");
+        assertNotSame(ulid, clonedUlid, "Cloned ULID should not be the same object as the original");
+    }
+
+    @Test
+    void testPrivateConstructorAccess() {
+        assertThrows(InvocationTargetException.class, () -> {
+            Constructor<ULID> constructor = ULID.class.getDeclaredConstructor();
+            constructor.setAccessible(true); // Make the constructor accessible
+            try {
+                constructor.newInstance(); // This should throw IllegalArgumentException
+            } finally {
+                constructor.setAccessible(false); // Set it back to private
+            }
+        });
+    }
+
+    @Test
+    void testParseULIDThrowNull() {
+        assertThrows(NullPointerException.class, () -> ULID.parseULID(null));
+    }
+
+    @Test
+    void testParseULIDThrowInvalidLength() {
+        assertThrows(IllegalArgumentException.class, () -> ULID.parseULID("12345"));
+    }
+
 
 }
 
