@@ -1,5 +1,16 @@
 # Hibernate ULID Integration
 
+[![Java CI with Maven](https://github.com/sudoitir/hibernate-ulid-generator/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/sudoitir/hibernate-ulid-generator/actions/workflows/maven.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+
+
 Java `ULID` Implementation
 by [huxi/sulky](https://github.com/huxi/sulky/blob/master/sulky-ulid/src/main/java/de/huxhorn/sulky/ulid/ULID.java)
 
