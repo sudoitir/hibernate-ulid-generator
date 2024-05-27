@@ -2,6 +2,7 @@
 
 [![Java CI with Maven](https://github.com/sudoitir/hibernate-ulid-generator/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/sudoitir/hibernate-ulid-generator/actions/workflows/maven.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sudoitir_hibernate-ulid-generator&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sudoitir_hibernate-ulid-generator)
