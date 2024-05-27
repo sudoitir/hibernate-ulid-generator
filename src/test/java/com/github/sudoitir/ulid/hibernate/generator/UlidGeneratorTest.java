@@ -1,9 +1,10 @@
-package ir.sudoit.ulid.hibernate.generator;
+package com.github.sudoitir.ulid.hibernate.generator;
 
-import ir.sudoit.ulid.ULID;
+import com.github.sudoitir.ulid.ULID;
 import jakarta.persistence.Id;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +19,7 @@ class UlidGeneratorTest {
         SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
         Object generatedValue = generator.generate(session, new MockEntity());
         assertNotNull(generatedValue, "Generated value should not be null");
-        assertInstanceOf(ULID.class, generatedValue, "Generated value should be an instance of ULID");
+        Assertions.assertInstanceOf(ULID.class, generatedValue, "Generated value should be an instance of ULID");
     }
 
     @Test

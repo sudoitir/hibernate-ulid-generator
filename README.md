@@ -33,22 +33,22 @@ ULIDs to be used as identifiers for entity objects.
    entity IDs.
 
     ```java
-    import ir.sudoit.ulid.hibernate.annotation.UlidGenerator;
+    import com.github.sudoitir.ulid.hibernate.ULIDType;import com.github.sudoitir.ulid.hibernate.generator.UlidGenerator;import ir.sudoit.ulid.hibernate.annotation.UlidGenerator;
 
     @Entity
     public class YourEntity {
    
         @Id
         @GeneratedValue(generator = "ulid")
-        @GenericGenerator(name = "ulid", type = ir.sudoit.ulid.hibernate.generator.UlidGenerator.class)
-        @Type(value = ir.sudoit.ulid.hibernate.ULIDType.class)
+        @GenericGenerator(name = "ulid", type = UlidGenerator.class)
+        @Type(value = ULIDType.class)
         private ULID id;
    
         // Or
    
         @Id
         @GeneratedValue(generator = "ulid")
-        @GenericGenerator(name = "ulid", type = ir.sudoit.ulid.hibernate.generator.UlidGenerator.class)
+        @GenericGenerator(name = "ulid", type = UlidGenerator.class)
         private String id;
    
         // Or byte[]
@@ -108,7 +108,7 @@ following XML snippet to your project's `pom.xml` file:
 ```xml
 
 <dependency>
-    <groupId>ir.sudoit</groupId>
+    <groupId>com.github.sudoitir</groupId>
     <artifactId>ulid-generator</artifactId>
     <version>0.0.1</version>
 </dependency>

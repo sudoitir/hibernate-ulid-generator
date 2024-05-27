@@ -1,4 +1,4 @@
-package ir.sudoit.ulid;
+package com.github.sudoitir.ulid;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;

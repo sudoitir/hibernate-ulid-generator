@@ -1,6 +1,6 @@
-package ir.sudoit.ulid.hibernate.generator;
+package com.github.sudoitir.ulid.hibernate.generator;
 
-import ir.sudoit.ulid.ULID;
+import com.github.sudoitir.ulid.ULID;
 import jakarta.persistence.Id;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

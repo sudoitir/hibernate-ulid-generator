@@ -1,4 +1,4 @@
-package ir.sudoit.ulid;
+package com.github.sudoitir.ulid;
 
 import java.io.Serial;
 import java.io.Serializable;

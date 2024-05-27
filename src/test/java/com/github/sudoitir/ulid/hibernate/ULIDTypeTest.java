@@ -1,6 +1,6 @@
-package ir.sudoit.ulid.hibernate;
+package com.github.sudoitir.ulid.hibernate;
 
-import ir.sudoit.ulid.ULID;
+import com.github.sudoitir.ulid.ULID;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
