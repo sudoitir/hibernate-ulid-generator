@@ -137,8 +137,6 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        private static final ULIDType.ToBytesTransformer INSTANCE = new ToBytesTransformer();
-
         public byte[] transform(ULID ulid) {
             byte[] bytes = new byte[16];
             BytesHelper.fromLong(ulid.mostSignificantBits(), bytes, 0);
