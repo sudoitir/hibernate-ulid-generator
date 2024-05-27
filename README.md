@@ -31,6 +31,15 @@ ULIDs to be used as identifiers for entity objects.
         @GenericGenerator(name = "ulid", type = ir.sudoit.ulid.hibernate.generator.UlidGenerator.class)
         @Type(value = ir.sudoit.ulid.hibernate.ULIDType.class)
         private ULID id;
+   
+        // Or
+   
+        @Id
+        @GeneratedValue(generator = "ulid")
+        @GenericGenerator(name = "ulid", type = ir.sudoit.ulid.hibernate.generator.UlidGenerator.class)
+        private String id;
+   
+        // Or byte[]
 
         // Other entity properties and methods
     }
