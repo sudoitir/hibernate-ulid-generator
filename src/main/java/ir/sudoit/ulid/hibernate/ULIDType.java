@@ -39,7 +39,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     @Override
     public ULID nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
         String columnValue = rs.getString(position);
-        return rs.wasNull() ? null : ULIDType.ToStringTransformer.INSTANCE.parse(columnValue);
+        return rs.wasNull() ? null : ULIDType.ToStringTransformer.getInstance().parse(columnValue);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
         if (value == null) {
             st.setNull(index, VARCHAR);
         } else {
-            st.setString(index, ULIDType.ToStringTransformer.INSTANCE.transform(value));
+            st.setString(index, ULIDType.ToStringTransformer.getInstance().transform(value));
         }
     }
 
@@ -93,7 +93,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class PassThroughTransformer implements ULIDType.ValueTransformer {
-        public static final ULIDType.PassThroughTransformer INSTANCE = new ULIDType.PassThroughTransformer();
+        private static ULIDType.PassThroughTransformer INSTANCE;
 
         public ULID transform(ULID ulid) {
             return ulid;
@@ -103,12 +103,19 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return (ULID) value;
         }
 
+        public static synchronized PassThroughTransformer getInstance() {
+            if (INSTANCE == null) {
+                INSTANCE = new PassThroughTransformer();
+            }
+            return INSTANCE;
+        }
+
         private PassThroughTransformer() {
         }
     }
 
     public static class ToStringTransformer implements ULIDType.ValueTransformer {
-        public static final ULIDType.ToStringTransformer INSTANCE = new ULIDType.ToStringTransformer();
+        private static ULIDType.ToStringTransformer INSTANCE;
 
         public String transform(ULID ulid) {
             return ulid.toString();
@@ -118,12 +125,19 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return ULID.parseULID((String) value);
         }
 
+        public static synchronized ToStringTransformer getInstance() {
+            if (INSTANCE == null) {
+                INSTANCE = new ToStringTransformer();
+            }
+            return INSTANCE;
+        }
+
         private ToStringTransformer() {
         }
     }
 
     public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        public static final ULIDType.ToBytesTransformer INSTANCE = new ULIDType.ToBytesTransformer();
+        private static ULIDType.ToBytesTransformer INSTANCE;
 
         public byte[] transform(ULID ulid) {
             byte[] bytes = new byte[16];
@@ -135,6 +149,13 @@ public class ULIDType implements EnhancedUserType<ULID> {
         public ULID parse(Object value) {
             byte[] bytea = (byte[]) value;
             return new ULID(BytesHelper.asLong(bytea, 0), BytesHelper.asLong(bytea, 8));
+        }
+
+        public static synchronized ToBytesTransformer getInstance() {
+            if (INSTANCE == null) {
+                INSTANCE = new ToBytesTransformer();
+            }
+            return INSTANCE;
         }
 
         private ToBytesTransformer() {

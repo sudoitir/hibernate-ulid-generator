@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Random;
 
 public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
 
