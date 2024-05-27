@@ -93,7 +93,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class PassThroughTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.PassThroughTransformer instance;
+        private final static ULIDType.PassThroughTransformer INSTANCE = new PassThroughTransformer();
 
         public ULID transform(ULID ulid) {
             return ulid;
@@ -104,10 +104,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
         }
 
         public static synchronized PassThroughTransformer getInstance() {
-            if (instance == null) {
-                instance = new PassThroughTransformer();
-            }
-            return instance;
+            return INSTANCE;
         }
 
         private PassThroughTransformer() {
@@ -115,7 +112,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToStringTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.ToStringTransformer instance;
+        private final static ULIDType.ToStringTransformer INSTANCE = new ToStringTransformer();
 
         public String transform(ULID ulid) {
             return ulid.toString();
@@ -126,10 +123,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
         }
 
         public static synchronized ToStringTransformer getInstance() {
-            if (instance == null) {
-                instance = new ToStringTransformer();
-            }
-            return instance;
+            return INSTANCE;
         }
 
         private ToStringTransformer() {
@@ -137,7 +131,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.ToBytesTransformer instance;
+        private final static ULIDType.ToBytesTransformer INSTANCE = new ToBytesTransformer();
 
         public byte[] transform(ULID ulid) {
             byte[] bytes = new byte[16];
@@ -151,11 +145,8 @@ public class ULIDType implements EnhancedUserType<ULID> {
             return new ULID(BytesHelper.asLong(bytea, 0), BytesHelper.asLong(bytea, 8));
         }
 
-        public static synchronized ToBytesTransformer getInstance() {
-            if (instance == null) {
-                instance = new ToBytesTransformer();
-            }
-            return instance;
+        public static ToBytesTransformer getInstance() {
+            return INSTANCE;
         }
 
         private ToBytesTransformer() {

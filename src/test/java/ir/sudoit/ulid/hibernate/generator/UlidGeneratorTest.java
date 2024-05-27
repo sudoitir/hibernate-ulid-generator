@@ -61,8 +61,9 @@ class UlidGeneratorTest {
     void testGenerateWithoutIdField() {
         UlidGenerator generator = new UlidGenerator();
         SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
+        MockEntityNoId mockEntityNoId = new MockEntityNoId();
         try {
-            generator.generate(session, new MockEntityNoId());
+            generator.generate(session, mockEntityNoId);
             fail();
         } catch (HibernateException ignored) {
         }
@@ -72,8 +73,9 @@ class UlidGeneratorTest {
     void testGenerateWithUnsupportedIdField() {
         UlidGenerator generator = new UlidGenerator();
         SharedSessionContractImplementor session = mock(SharedSessionContractImplementor.class);
+        MockEntityUnsupportedTypeIdField mockEntityUnsupportedTypeIdField = new MockEntityUnsupportedTypeIdField();
         try {
-            generator.generate(session, new MockEntityUnsupportedTypeIdField());
+            generator.generate(session, mockEntityUnsupportedTypeIdField);
             fail();
         } catch (IllegalArgumentException ignored) {
         }
