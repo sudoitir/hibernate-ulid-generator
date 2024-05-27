@@ -53,7 +53,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
 
     @Override
     public ULID deepCopy(ULID value) {
-        return value == null ? null : (ULID) value.clone();
+        return value == null ? null : (ULID) value.copy();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class PassThroughTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.PassThroughTransformer INSTANCE;
+        private static ULIDType.PassThroughTransformer instance;
 
         public ULID transform(ULID ulid) {
             return ulid;
@@ -104,10 +104,10 @@ public class ULIDType implements EnhancedUserType<ULID> {
         }
 
         public static synchronized PassThroughTransformer getInstance() {
-            if (INSTANCE == null) {
-                INSTANCE = new PassThroughTransformer();
+            if (instance == null) {
+                instance = new PassThroughTransformer();
             }
-            return INSTANCE;
+            return instance;
         }
 
         private PassThroughTransformer() {
@@ -115,7 +115,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToStringTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.ToStringTransformer INSTANCE;
+        private static ULIDType.ToStringTransformer instance;
 
         public String transform(ULID ulid) {
             return ulid.toString();
@@ -126,10 +126,10 @@ public class ULIDType implements EnhancedUserType<ULID> {
         }
 
         public static synchronized ToStringTransformer getInstance() {
-            if (INSTANCE == null) {
-                INSTANCE = new ToStringTransformer();
+            if (instance == null) {
+                instance = new ToStringTransformer();
             }
-            return INSTANCE;
+            return instance;
         }
 
         private ToStringTransformer() {
@@ -137,7 +137,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        private static ULIDType.ToBytesTransformer INSTANCE;
+        private static ULIDType.ToBytesTransformer instance;
 
         public byte[] transform(ULID ulid) {
             byte[] bytes = new byte[16];
@@ -152,10 +152,10 @@ public class ULIDType implements EnhancedUserType<ULID> {
         }
 
         public static synchronized ToBytesTransformer getInstance() {
-            if (INSTANCE == null) {
-                INSTANCE = new ToBytesTransformer();
+            if (instance == null) {
+                instance = new ToBytesTransformer();
             }
-            return INSTANCE;
+            return instance;
         }
 
         private ToBytesTransformer() {

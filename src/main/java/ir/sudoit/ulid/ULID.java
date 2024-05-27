@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Objects;
 
-public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
+public final class ULID implements Comparable<ULID>, Serializable {
 
     @Serial
     private static final long serialVersionUID = -3563159514112487717L;
@@ -300,8 +300,7 @@ public final class ULID implements Comparable<ULID>, Serializable, Cloneable {
         return mostSigBits != 0 ? mostSigBits : Long.compare(this.leastSignificantBits, val.leastSignificantBits);
     }
 
-    @Override
-    public Object clone() {
+    public Object copy() {
         return new ULID(mostSignificantBits, leastSignificantBits);
     }
 }

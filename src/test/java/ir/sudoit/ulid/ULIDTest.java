@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ULIDTest {
 
     @RepeatedTest(500)
-    public void testRandomULIDNotNull() {
+    void testRandomULIDNotNull() {
         ULID ulid = ULID.randomULID();
         assertNotNull(ulid);
     }
 
     @RepeatedTest(500)
-    public void testRandomULIDWithTimestamp() {
+    void testRandomULIDWithTimestamp() {
         long timestamp = System.currentTimeMillis();
         ULID ulid = ULID.randomULID(timestamp);
         long mostSignificantBits = ulid.mostSignificantBits();
@@ -34,14 +34,14 @@ class ULIDTest {
     }
 
     @RepeatedTest(500)
-    public void testRandomnessAndUniqueness() {
+    void testRandomnessAndUniqueness() {
         ULID ulid1 = ULID.randomULID();
         ULID ulid2 = ULID.randomULID();
         assertNotEquals(ulid1, ulid2);
     }
 
     @Test
-    public void testMultithreadingCreation() throws InterruptedException {
+    void testMultithreadingCreation() throws InterruptedException {
         int numberOfThreads = 100;
         try (ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads)) {
             Set<ULID> ulidSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -60,7 +60,7 @@ class ULIDTest {
     }
 
     @Test
-    public void testFromBytesValidData() {
+    void testFromBytesValidData() {
         byte[] data = new byte[16];
         new SecureRandom().nextBytes(data);
         ULID ulid = ULID.fromBytes(data);
@@ -70,7 +70,7 @@ class ULIDTest {
 
     // Test increment method for a non-overflow scenario
     @Test
-    public void testIncrementNonOverflow() {
+    void testIncrementNonOverflow() {
         ULID ulid = new ULID(0L, 0L);
         ULID incremented = ulid.increment();
         assertEquals(1L, incremented.leastSignificantBits());
@@ -78,7 +78,7 @@ class ULIDTest {
 
     // Test increment method for an overflow scenario
     @Test
-    public void testIncrementOverflow() {
+    void testIncrementOverflow() {
         ULID ulid = new ULID(0L, 0xFFFF_FFFF_FFFF_FFFFL);
         ULID incremented = ulid.increment();
         assertEquals(1L, incremented.mostSignificantBits());
@@ -87,7 +87,7 @@ class ULIDTest {
 
     // Test nextMonotonicValue method with same timestamp
     @Test
-    public void testNextMonotonicValueSameTimestamp() {
+    void testNextMonotonicValueSameTimestamp() {
         ULID ulid = new ULID(0L, 0L);
         ULID next = ULID.nextMonotonicValue(ulid, ulid.timestamp());
         assertEquals(ulid.increment(), next);
@@ -95,7 +95,7 @@ class ULIDTest {
 
     // Test nextMonotonicValue method with different timestamp
     @Test
-    public void testNextMonotonicValueDifferentTimestamp() {
+    void testNextMonotonicValueDifferentTimestamp() {
         ULID ulid = new ULID(0L, 0L);
         long newTimestamp = ulid.timestamp() + 1;
         ULID next = ULID.nextMonotonicValue(ulid, newTimestamp);
@@ -104,7 +104,7 @@ class ULIDTest {
 
 
     @Test
-    public void testParseULIDValidString() {
+    void testParseULIDValidString() {
         String ulidString = "00000000000000000000000000";
         ULID ulid = ULID.parseULID(ulidString);
         assertNotNull(ulid);
@@ -200,7 +200,7 @@ class ULIDTest {
     @Test
     void testClone() {
         ULID ulid = new ULID(0L, 0L);
-        ULID clonedUlid = (ULID) ulid.clone();
+        ULID clonedUlid = (ULID) ulid.copy();
         assertEquals(ulid, clonedUlid, "Cloned ULID should be equal to the original");
         assertNotSame(ulid, clonedUlid, "Cloned ULID should not be the same object as the original");
     }
