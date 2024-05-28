@@ -33,7 +33,9 @@ ULIDs to be used as identifiers for entity objects.
    entity IDs.
 
     ```java
-    import com.github.sudoitir.ulid.hibernate.ULIDType;import com.github.sudoitir.ulid.hibernate.generator.UlidGenerator;import ir.sudoit.ulid.hibernate.annotation.UlidGenerator;
+   import com.github.sudoitir.ulid.hibernate.ULIDType;
+   import com.github.sudoitir.ulid.hibernate.generator.UlidGenerator;
+   import com.github.sudoitir.ulid.hibernate.annotation.UlidGenerator;
 
     @Entity
     public class YourEntity {
@@ -125,8 +127,8 @@ Below are examples of how to use the various methods provided by the `ULID` clas
 To create a new random ULID:
 
 ```java
-ULID randomUlid = ULID.randomULID();
-System.out.println("Random ULID: "+randomUlid);
+ULID timedUlid = ULID.randomULID();
+System.out.println("Random Timed ULID: " + timedUlid);
 ```
 
 ### Creating a Random ULID with a Specific Timestamp
@@ -134,7 +136,7 @@ System.out.println("Random ULID: "+randomUlid);
 ```java
 long timestamp = System.currentTimeMillis();
 ULID timedUlid = ULID.randomULID(timestamp);
-System.out.println("Timed ULID: "+timedUlid);
+System.out.println("Random Timed ULID: " + timedUlid);
 ```
 
 ### Creating a ULID from Bytes
@@ -145,7 +147,7 @@ To create a ULID from a 16-byte array:
 byte[] ulidBytes = new byte[16];
 // populate ulidBytes with your data
 ULID ulidFromBytes = ULID.fromBytes(ulidBytes);
-System.out.println("ULID from bytes: "+ulidFromBytes);
+System.out.println("ULID from bytes: " + ulidFromBytes);
 ```
 
 ### Incrementing a ULID
@@ -153,9 +155,9 @@ System.out.println("ULID from bytes: "+ulidFromBytes);
 To increment the least significant bits of a ULID:
 
 ```java
-ULID ulid = ULID.randomULID();
-ULID incrementedUlid = ulid.increment();
-System.out.println("Incremented ULID: "+incrementedUlid);
+ULID timedUlid = ULID.randomULID();
+ULID incrementedUlid = timedUlid.increment();
+System.out.println("Incremented ULID: " + incrementedUlid);
 ```
 
 ### Generating the Next Monotonic ULID
@@ -165,7 +167,7 @@ To generate the next monotonic ULID based on a previous ULID:
 ```java
 ULID previousUlid = ULID.randomULID();
 ULID nextMonotonicUlid = previousUlid.nextMonotonicValue(previousUlid);
-System.out.println("Next Monotonic ULID: "+nextMonotonicUlid);
+System.out.println("Next Monotonic ULID: " + nextMonotonicUlid);
 ```
 
 ### Generating the Next Monotonic ULID with a Specific Timestamp
@@ -173,7 +175,7 @@ System.out.println("Next Monotonic ULID: "+nextMonotonicUlid);
 ```java
 long timestamp = System.currentTimeMillis();
 ULID nextMonotonicUlidWithTimestamp = ULID.nextMonotonicValue(previousUlid, timestamp);
-System.out.println("Next Monotonic ULID with timestamp: "+nextMonotonicUlidWithTimestamp);
+System.out.println("Next Monotonic ULID with timestamp: " + nextMonotonicUlidWithTimestamp);
 ```
 
 ### Generating the Next Strictly Monotonic ULID
@@ -183,7 +185,7 @@ To generate the next strictly monotonic ULID or return empty if an overflow occu
 ```java
 ULID previousUlid = ULID.randomULID();
 Optional<ULID> nextStrictlyMonotonicUlid = ULID.nextStrictlyMonotonicValue(previousUlid);
-nextStrictlyMonotonicUlid.ifPresent(ulid -> System.out.println("Next Strictly Monotonic ULID: "+ulid));
+nextStrictlyMonotonicUlid.ifPresent(ulid -> System.out.println("Next Strictly Monotonic ULID: " + ulid));
 ```
 
 ### Generating the Next Strictly Monotonic ULID with a Specific Timestamp
@@ -191,7 +193,7 @@ nextStrictlyMonotonicUlid.ifPresent(ulid -> System.out.println("Next Strictly Mo
 ```java
 long timestamp = System.currentTimeMillis();
 Optional<ULID> nextStrictlyMonotonicUlidWithTimestamp = ULID.nextStrictlyMonotonicValue(previousUlid, timestamp);
-nextStrictlyMonotonicUlidWithTimestamp.ifPresent(ulid -> System.out.println("Next Strictly Monotonic ULID with timestamp: "+ulid));
+nextStrictlyMonotonicUlidWithTimestamp.ifPresent(ulid -> System.out.println("Next Strictly Monotonic ULID with timestamp: " + ulid));
 ```
 
 ### Parsing a ULID String
@@ -201,7 +203,7 @@ To parse a ULID from a string representation:
 ```java
 String ulidString = "01HYTW0TRGN5CJ7V4JN8EYN58P";
 ULID parsedUlid = ULID.parseULID(ulidString);
-System.out.println("Parsed ULID: "+parsedUlid);
+System.out.println("Parsed ULID: " + parsedUlid);
 ```
 
 ### Components
