@@ -1,18 +1,17 @@
 package com.github.sudoitir.ulid.hibernate;
 
-import com.github.sudoitir.ulid.ULID;
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.internal.util.BytesHelper;
-import org.hibernate.usertype.EnhancedUserType;
+import static java.sql.Types.VARCHAR;
 
+import com.github.sudoitir.ulid.ULID;
+import com.github.sudoitir.ulid.transformer.ToStringTransformer;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
-
-import static java.sql.Types.VARCHAR;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.usertype.EnhancedUserType;
 
 public class ULIDType implements EnhancedUserType<ULID> {
 
@@ -37,17 +36,19 @@ public class ULIDType implements EnhancedUserType<ULID> {
     }
 
     @Override
-    public ULID nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
+    public ULID nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session,
+            Object owner) throws SQLException {
         String columnValue = rs.getString(position);
-        return rs.wasNull() ? null : ULIDType.ToStringTransformer.getInstance().parse(columnValue);
+        return rs.wasNull() ? null : ToStringTransformer.getInstance().parse(columnValue);
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, ULID value, int index, SharedSessionContractImplementor session) throws SQLException {
+    public void nullSafeSet(PreparedStatement st, ULID value, int index,
+            SharedSessionContractImplementor session) throws SQLException {
         if (value == null) {
             st.setNull(index, VARCHAR);
         } else {
-            st.setString(index, ULIDType.ToStringTransformer.getInstance().transform(value));
+            st.setString(index, ToStringTransformer.getInstance().transform(value));
         }
     }
 
@@ -84,81 +85,6 @@ public class ULIDType implements EnhancedUserType<ULID> {
     @Override
     public ULID fromStringValue(CharSequence sequence) throws HibernateException {
         return ULID.parseULID(sequence.toString());
-    }
-
-    public interface ValueTransformer {
-        Serializable transform(ULID ulid);
-
-        ULID parse(Object value);
-    }
-
-    public static class PassThroughTransformer implements ULIDType.ValueTransformer {
-
-        public ULID transform(ULID ulid) {
-            return ulid;
-        }
-
-        public ULID parse(Object value) {
-            return (ULID) value;
-        }
-
-        private static class SingletonHelper {
-            private static final PassThroughTransformer INSTANCE = new PassThroughTransformer();
-        }
-
-        public static PassThroughTransformer getInstance() {
-            return PassThroughTransformer.SingletonHelper.INSTANCE;
-        }
-
-        private PassThroughTransformer() {
-        }
-    }
-
-    public static class ToStringTransformer implements ULIDType.ValueTransformer {
-
-        public String transform(ULID ulid) {
-            return ulid.toString();
-        }
-
-        public ULID parse(Object value) {
-            return ULID.parseULID((String) value);
-        }
-
-        private static class SingletonHelper {
-            private static final ToStringTransformer INSTANCE = new ToStringTransformer();
-        }
-
-        public static ToStringTransformer getInstance() {
-            return ToStringTransformer.SingletonHelper.INSTANCE;
-        }
-
-        private ToStringTransformer() {
-        }
-    }
-
-    public static class ToBytesTransformer implements ULIDType.ValueTransformer {
-        public byte[] transform(ULID ulid) {
-            byte[] bytes = new byte[16];
-            BytesHelper.fromLong(ulid.mostSignificantBits(), bytes, 0);
-            BytesHelper.fromLong(ulid.leastSignificantBits(), bytes, 8);
-            return bytes;
-        }
-
-        public ULID parse(Object value) {
-            byte[] bytea = (byte[]) value;
-            return new ULID(BytesHelper.asLong(bytea, 0), BytesHelper.asLong(bytea, 8));
-        }
-
-        private static class SingletonHelper {
-            private static final ToBytesTransformer INSTANCE = new ToBytesTransformer();
-        }
-
-        public static ToBytesTransformer getInstance() {
-            return ToBytesTransformer.SingletonHelper.INSTANCE;
-        }
-
-        private ToBytesTransformer() {
-        }
     }
 
 }
