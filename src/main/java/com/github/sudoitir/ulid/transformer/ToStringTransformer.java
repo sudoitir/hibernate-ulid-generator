@@ -1,7 +1,6 @@
 package com.github.sudoitir.ulid.transformer;
 
 import com.github.sudoitir.ulid.ULID;
-import com.github.sudoitir.ulid.hibernate.ULIDType;
 
 public class ToStringTransformer implements ValueTransformer {
 
@@ -10,7 +9,7 @@ public class ToStringTransformer implements ValueTransformer {
     }
 
     public ULID parse(Object value) {
-        return ULID.parseULID((String) value);
+        return ULID.from((String) value);
     }
 
     private static class SingletonHelper {

@@ -84,7 +84,7 @@ public class ULIDType implements EnhancedUserType<ULID> {
 
     @Override
     public ULID fromStringValue(CharSequence sequence) throws HibernateException {
-        return ULID.parseULID(sequence.toString());
+        return ULID.from(sequence.toString());
     }
 
 }

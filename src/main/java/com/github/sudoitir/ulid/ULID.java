@@ -3,6 +3,7 @@ package com.github.sudoitir.ulid;
 import java.io.Serial;
 import java.io.Serializable;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Objects;
 
 public final class ULID implements Comparable<ULID>, Serializable {
@@ -77,6 +78,7 @@ public final class ULID implements Comparable<ULID>, Serializable {
      * ULIDs. In a holder class to defer initialization until needed.
      */
     private static class Holder {
+
         static final SecureRandom numberGenerator = new SecureRandom();
     }
 
@@ -110,22 +112,6 @@ public final class ULID implements Comparable<ULID>, Serializable {
         return new ULID(mostSignificantBits, leastSignificantBits);
     }
 
-    public static ULID fromBytes(byte[] data) {
-        Objects.requireNonNull(data, "data must not be null!");
-        if (data.length != 16) {
-            throw new IllegalArgumentException("data must be 16 bytes in length!");
-        }
-        long mostSignificantBits = 0;
-        long leastSignificantBits = 0;
-        for (int i = 0; i < 8; i++) {
-            mostSignificantBits = (mostSignificantBits << 8) | (data[i] & 0xff);
-        }
-        for (int i = 8; i < 16; i++) {
-            leastSignificantBits = (leastSignificantBits << 8) | (data[i] & 0xff);
-        }
-        return new ULID(mostSignificantBits, leastSignificantBits);
-    }
-
 
     public ULID increment() {
         long lsb = leastSignificantBits;
@@ -141,25 +127,25 @@ public final class ULID implements Comparable<ULID>, Serializable {
 
 
     /**
-     * Returns the next monotonic value. If an overflow happened while incrementing the random part of the given
-     * previous ULID value then the returned value will have a zero random part.
+     * Returns the next monotonic value. If an overflow happened while incrementing the random part
+     * of the given previous ULID value then the returned value will have a zero random part.
      *
      * @param previousUlid the previous ULID value.
      * @return the next monotonic value.
      */
-    public ULID nextMonotonicValue(ULID previousUlid) {
+    public ULID nextMonotonicValue(final ULID previousUlid) {
         return nextMonotonicValue(previousUlid, System.currentTimeMillis());
     }
 
     /**
-     * Returns the next monotonic value. If an overflow happened while incrementing the random part of the given
-     * previous ULID value then the returned value will have a zero random part.
+     * Returns the next monotonic value. If an overflow happened while incrementing the random part
+     * of the given previous ULID value then the returned value will have a zero random part.
      *
      * @param previousUlid the previous ULID value.
      * @param timestamp    the timestamp of the next ULID value.
      * @return the next monotonic value.
      */
-    public static ULID nextMonotonicValue(ULID previousUlid, long timestamp) {
+    public static ULID nextMonotonicValue(final ULID previousUlid, final long timestamp) {
         Objects.requireNonNull(previousUlid, "previousUlid must not be null!");
         if (previousUlid.timestamp() == timestamp) {
             return previousUlid.increment();
@@ -168,7 +154,7 @@ public final class ULID implements Comparable<ULID>, Serializable {
     }
 
 
-    public static ULID parseULID(String ulidString) {
+    public static ULID from(final String ulidString) {
         Objects.requireNonNull(ulidString, "ulidString must not be null!");
         if (ulidString.length() != 26) {
             throw new IllegalArgumentException("ulidString must be exactly 26 chars long.");
@@ -177,7 +163,8 @@ public final class ULID implements Comparable<ULID>, Serializable {
         String timeString = ulidString.substring(0, 10);
         long time = internalParseCrockford(timeString);
         if ((time & TIMESTAMP_OVERFLOW_MASK) != 0) {
-            throw new IllegalArgumentException("ulidString must not exceed '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'!");
+            throw new IllegalArgumentException(
+                    "ulidString must not exceed '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'!");
         }
         String part1String = ulidString.substring(10, 18);
         String part2String = ulidString.substring(18);
@@ -187,6 +174,22 @@ public final class ULID implements Comparable<ULID>, Serializable {
         long most = (time << 16) | (part1 >>> 24);
         long least = part2 | (part1 << 40);
         return new ULID(most, least);
+    }
+
+    public static ULID from(final byte[] data) {
+        Objects.requireNonNull(data, "data must not be null!");
+        if (data.length != 16) {
+            throw new IllegalArgumentException("data must be 16 bytes in length!");
+        }
+        long mostSignificantBits = 0;
+        long leastSignificantBits = 0;
+        for (int i = 0; i < 8; i++) {
+            mostSignificantBits = (mostSignificantBits << 8) | (data[i] & 0xff);
+        }
+        for (int i = 8; i < 16; i++) {
+            leastSignificantBits = (leastSignificantBits << 8) | (data[i] & 0xff);
+        }
+        return new ULID(mostSignificantBits, leastSignificantBits);
     }
 
     /**
@@ -213,11 +216,24 @@ public final class ULID implements Comparable<ULID>, Serializable {
     }
 
 
-    private static long internalParseCrockford(String input) {
+    /**
+     * Returns the instant of creation.
+     * <p>
+     * The instant of creation is extracted from the time component.
+     *
+     * @return {@link Instant}
+     */
+    public Instant instant() {
+        return Instant.ofEpochMilli(timestamp());
+    }
+
+
+    private static long internalParseCrockford(final String input) {
         Objects.requireNonNull(input, "input must not be null!");
         int length = input.length();
         if (length > 12) {
-            throw new IllegalArgumentException("input length must not exceed 12 but was " + length + "!");
+            throw new IllegalArgumentException(
+                    "input length must not exceed 12 but was " + length + "!");
         }
 
         long result = 0;
@@ -238,7 +254,8 @@ public final class ULID implements Comparable<ULID>, Serializable {
     /*
      * http://crockford.com/wrmg/base32.html
      */
-    private static void internalWriteCrockford(char[] buffer, long value, int count, int offset) {
+    private static void internalWriteCrockford(final char[] buffer, final long value,
+            final int count, final int offset) {
         for (int i = 0; i < count; i++) {
             int index = (int) ((value >>> ((count - i - 1) * MASK_BITS)) & MASK);
             buffer[offset + i] = ENCODING_CHARS[index];
@@ -247,7 +264,8 @@ public final class ULID implements Comparable<ULID>, Serializable {
 
     private static void checkTimestamp(long timestamp) {
         if ((timestamp & TIMESTAMP_OVERFLOW_MASK) != 0) {
-            throw new IllegalArgumentException("ULID does not support timestamps after +10889-08-02T05:31:50.655Z!");
+            throw new IllegalArgumentException(
+                    "ULID does not support timestamps after +10889-08-02T05:31:50.655Z!");
         }
     }
 
@@ -278,11 +296,13 @@ public final class ULID implements Comparable<ULID>, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
+    public boolean equals(final Object obj) {
+        if (obj == this) {
             return true;
-        if (obj == null || obj.getClass() != this.getClass())
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
+        }
         var that = (ULID) obj;
         return this.mostSignificantBits == that.mostSignificantBits &&
                 this.leastSignificantBits == that.leastSignificantBits;
@@ -295,9 +315,10 @@ public final class ULID implements Comparable<ULID>, Serializable {
     }
 
     @Override
-    public int compareTo(ULID val) {
+    public int compareTo(final ULID val) {
         int mostSigBits = Long.compare(this.mostSignificantBits, val.mostSignificantBits);
-        return mostSigBits != 0 ? mostSigBits : Long.compare(this.leastSignificantBits, val.leastSignificantBits);
+        return mostSigBits != 0 ? mostSigBits
+                : Long.compare(this.leastSignificantBits, val.leastSignificantBits);
     }
 
     public Object copy() {

@@ -1,19 +1,22 @@
 package com.github.sudoitir.ulid;
 
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 class ULIDTest {
 
@@ -63,7 +66,7 @@ class ULIDTest {
     void testFromBytesValidData() {
         byte[] data = new byte[16];
         new SecureRandom().nextBytes(data);
-        ULID ulid = ULID.fromBytes(data);
+        ULID ulid = ULID.from(data);
         assertNotNull(ulid);
     }
 
@@ -106,7 +109,7 @@ class ULIDTest {
     @Test
     void testParseULIDValidString() {
         String ulidString = "00000000000000000000000000";
-        ULID ulid = ULID.parseULID(ulidString);
+        ULID ulid = ULID.from(ulidString);
         assertNotNull(ulid);
     }
 
@@ -114,7 +117,7 @@ class ULIDTest {
     void testFromBytesNullData() {
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> ULID.fromBytes(null),
+                () -> ULID.from((byte[]) null),
                 "Expected fromBytes to throw, but it didn't"
         );
         assertTrue(exception.getMessage().contains("data must not be null"));
@@ -124,7 +127,7 @@ class ULIDTest {
     void testFromBytesInvalidDataLength() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> ULID.fromBytes(new byte[15]), // Invalid data length
+                () -> ULID.from(new byte[15]), // Invalid data length
                 "Expected fromBytes to throw, but it didn't"
         );
         assertTrue(exception.getMessage().contains("data must be 16 bytes in length"));
@@ -134,7 +137,7 @@ class ULIDTest {
     void testParseULIDNullString() {
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
-                () -> ULID.parseULID(null),
+                () -> ULID.from((String) null),
                 "Expected parseULID to throw, but it didn't"
         );
         assertTrue(exception.getMessage().contains("ulidString must not be null"));
@@ -144,7 +147,7 @@ class ULIDTest {
     void testParseULIDInvalidStringLength() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> ULID.parseULID("0000000000000000000000000"),
+                () -> ULID.from("0000000000000000000000000"),
                 "Expected parseULID to throw, but it didn't"
         );
         assertTrue(exception.getMessage().contains("ulidString must be exactly 26 chars long"));
@@ -202,7 +205,8 @@ class ULIDTest {
         ULID ulid = new ULID(0L, 0L);
         ULID clonedUlid = (ULID) ulid.copy();
         assertEquals(ulid, clonedUlid, "Cloned ULID should be equal to the original");
-        assertNotSame(ulid, clonedUlid, "Cloned ULID should not be the same object as the original");
+        assertNotSame(ulid, clonedUlid,
+                "Cloned ULID should not be the same object as the original");
     }
 
     @Test
@@ -220,15 +224,22 @@ class ULIDTest {
 
     @Test
     void testParseULIDThrowNull() {
-        assertThrows(NullPointerException.class, () -> ULID.parseULID(null));
+        assertThrows(NullPointerException.class, () -> ULID.from((String) null));
     }
 
     @Test
     void testParseULIDThrowInvalidLength() {
-        assertThrows(IllegalArgumentException.class, () -> ULID.parseULID("12345"));
+        assertThrows(IllegalArgumentException.class, () -> ULID.from("12345"));
     }
 
 
+    @Test
+    void getInstant() {
+        Instant now = Instant.now();
+        ULID ulid = ULID.randomULID(now.toEpochMilli());
+        Instant instant = ulid.instant();
+        assertThat(now).isCloseTo(instant, within(1, ChronoUnit.MILLIS));
+    }
 }
 
 
